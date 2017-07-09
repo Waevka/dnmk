@@ -19,27 +19,32 @@ public class dnmkSpawner : MonoBehaviour {
 
     private float lastSpawnTime;
     private bool spawnerActive;
+    private DnmkGameManager gameManager;
 
-    // Use this for initialization
-    void Start () {
+    private void Awake()
+    {
         lastSpawnTime = 0;
         spawnerActive = true;
+        gameManager = DnmkGameManager.Instance;
+    }
+    // Use this for initialization
+    void Start () {
         if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
+        StartCoroutine(SpawnerCleanup());
     }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		if(Time.time > lastSpawnTime + frequency && spawnerActive)
         {
-            StartCoroutine(SpawnBullets());
             lastSpawnTime = Time.time;
+            StartCoroutine(SpawnBullets());
             repeats -= 1;
         }
 
         if (repeats == 0)
         {
             spawnerActive = false;
-            StartCoroutine(SpawnerCleanup());
         }
 	}
 
@@ -52,13 +57,23 @@ public class dnmkSpawner : MonoBehaviour {
 
         for(int i = 0; i < bulletAmount; i++)
         {
-            GameObject bullet = Instantiate(dnmkPrefab, bulletCenterPivot.transform, false);
+            GameObject bullet = gameManager.DnmkBulletPool.RequestBulletFromPool();
+            bullet.transform.position = bulletCenterPivot.transform.position;
+            bullet.transform.parent = bulletCenterPivot.transform;
+            bullet.transform.rotation = transform.rotation;
+
             bulletCenterPivot.transform.rotation = transform.rotation;
 
-            bullet.transform.RotateAround(bulletCenterPivot.transform.position,
+            /* Circle type spawner
+             * Rotation point is selected based on rotateEachBurstIndependently
+             * If the total angle is 360, divide it evenly.
+             * Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are shown.
+             */
+            bullet.transform.RotateAround(
+                (rotateEachBurstIndependently? bulletCenterPivot.transform.position : transform.position),
                 Vector3.forward,
-                -totalAngle/2 + (totalAngle / ((float)bulletAmount-1)) * i
-                ); // circle-type spawner
+                totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
+                );
 
             //Unused transformations:
             //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
@@ -68,19 +83,17 @@ public class dnmkSpawner : MonoBehaviour {
             //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward); - move rigidbody without using force
             //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
             bullets[i] = bullet;
-            Destroy(bullet, bulletLifetime);
         }
         
         if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
         // for individual rotation of each inside circle
         StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
-        Destroy(bulletCenterPivot, bulletLifetime);
+        StartCoroutine(CleanUpBullets(bullets, bulletCenterPivot, bulletLifetime));
         yield return null;
     }
 
     private IEnumerator RotateBulletCenterPivot(Transform pivot)
     {
-        Debug.Log("Starting rotation coroutine");
         while(pivot != null)
         {   
             pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
@@ -89,16 +102,26 @@ public class dnmkSpawner : MonoBehaviour {
         yield return null;
     }
 
+    private IEnumerator CleanUpBullets(GameObject[] bullets, GameObject pivot, float time)
+    {
+        yield return new WaitForSeconds(time);
+        foreach(GameObject bullet in bullets)
+        {
+            gameManager.DnmkBulletPool.ReturnBulletToPool(bullet);
+            yield return null;
+        }
+        Destroy(pivot, 0.2f);
+        yield return null;
+    }
+
     private IEnumerator SpawnerCleanup()
     {
-        yield return new WaitUntil(() => transform.childCount == 0);
+        yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
         Destroy(gameObject);
     }
 
     private IEnumerator MoveBullets(GameObject[] bullets, Transform pivot)
     {
-        Debug.Log("Starting MoveBullets coroutine");
-
         while (pivot != null)
         {
             foreach(GameObject bullet in bullets)
@@ -107,8 +130,6 @@ public class dnmkSpawner : MonoBehaviour {
             }
             yield return null;
         }
-
-        Debug.Log("Finishing MoveBullets coroutine");
         yield return null;
     }
 }

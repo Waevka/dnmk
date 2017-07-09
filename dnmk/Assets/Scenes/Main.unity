@@ -108,6 +108,50 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &129860251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 129860252}
+  - component: {fileID: 129860253}
+  m_Layer: 0
+  m_Name: BulletPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &129860252
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 129860251}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.1267383, y: -2.2365904, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 794478246}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &129860253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 129860251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc1b06849ae4cf945bb4a8dae9e33eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSize: 1000
+  defaultBulletPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04,
+    type: 2}
+  avaliableBullets: 0
 --- !u!1 &670018416
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,6 +241,48 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &794478245
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 794478246}
+  - component: {fileID: 794478247}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &794478246
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 794478245}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1267383, y: 2.2365904, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 129860252}
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &794478247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 794478245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5de3727c19f353a439c9ca84bb823a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dnmkBulletPool: {fileID: 129860253}
 --- !u!1 &1547933592
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,10 +397,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalAngle: 360
   frequency: 0.5
-  repeats: 10
-  bulletAmount: 18
+  repeats: 50
+  bulletAmount: 12
   bulletSpeed: 2
-  bulletLifetime: 200
+  bulletLifetime: 10
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
   rotateSpeed: 2
   rotateEachBurstIndependently: 1
@@ -359,9 +445,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalAngle: 360
-  frequency: 0.5
+  frequency: 0.3
   repeats: 20
-  bulletAmount: 30
+  bulletAmount: 12
   bulletSpeed: 2
   bulletLifetime: 10
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
