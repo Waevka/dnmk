@@ -58,19 +58,18 @@ public class dnmkSpawner : MonoBehaviour {
         for(int i = 0; i < bulletAmount; i++)
         {
             GameObject bullet = gameManager.DnmkBulletPool.RequestBulletFromPool();
-            bullet.transform.position = bulletCenterPivot.transform.position;
-            bullet.transform.parent = bulletCenterPivot.transform;
-            bullet.transform.rotation = transform.rotation;
+            bullet.transform.position   = bulletCenterPivot.transform.position;
+            bullet.transform.parent     = bulletCenterPivot.transform;
+            bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
 
             bulletCenterPivot.transform.rotation = transform.rotation;
 
             /* Circle type spawner
-             * Rotation point is selected based on rotateEachBurstIndependently
              * If the total angle is 360, divide it evenly.
              * Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are shown.
              */
             bullet.transform.RotateAround(
-                (rotateEachBurstIndependently? bulletCenterPivot.transform.position : transform.position),
+                bulletCenterPivot.transform.position,
                 Vector3.forward,
                 totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
                 );
