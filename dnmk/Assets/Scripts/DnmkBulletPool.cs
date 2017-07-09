@@ -52,6 +52,7 @@ public class DnmkBulletPool : MonoBehaviour {
     public void ReturnBulletToPool(GameObject bullet)
     {
         bullet.SetActive(false);
+        bullet.transform.parent = transform;
         bulletPool.Enqueue(bullet);
     }
 

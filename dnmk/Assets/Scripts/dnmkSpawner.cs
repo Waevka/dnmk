@@ -19,13 +19,13 @@ public class dnmkSpawner : MonoBehaviour {
 
     private float lastSpawnTime;
     private bool spawnerActive;
-    private DnmkGameManager gameManager;
+    private DnmkGameManager GameManager;
 
     private void Awake()
     {
         lastSpawnTime = 0;
         spawnerActive = true;
-        gameManager = DnmkGameManager.Instance;
+        GameManager = DnmkGameManager.Instance;
     }
     // Use this for initialization
     void Start () {
@@ -57,7 +57,7 @@ public class dnmkSpawner : MonoBehaviour {
 
         for(int i = 0; i < bulletAmount; i++)
         {
-            GameObject bullet = gameManager.DnmkBulletPool.RequestBulletFromPool();
+            GameObject bullet = GameManager.DnmkBulletPool.RequestBulletFromPool();
             bullet.transform.position   = bulletCenterPivot.transform.position;
             bullet.transform.parent     = bulletCenterPivot.transform;
             bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
@@ -87,7 +87,7 @@ public class dnmkSpawner : MonoBehaviour {
         if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
         // for individual rotation of each inside circle
         StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
-        StartCoroutine(CleanUpBullets(bullets, bulletCenterPivot, bulletLifetime));
+        StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
     }
 
@@ -101,16 +101,10 @@ public class dnmkSpawner : MonoBehaviour {
         yield return null;
     }
 
-    private IEnumerator CleanUpBullets(GameObject[] bullets, GameObject pivot, float time)
+    private IEnumerator PivotCleanup(GameObject pivot, float time)
     {
-        yield return new WaitForSeconds(time);
-        foreach(GameObject bullet in bullets)
-        {
-            gameManager.DnmkBulletPool.ReturnBulletToPool(bullet);
-            yield return null;
-        }
+        yield return new WaitUntil(() => pivot.transform.childCount == 0);
         Destroy(pivot, 0.2f);
-        yield return null;
     }
 
     private IEnumerator SpawnerCleanup()
@@ -125,7 +119,7 @@ public class dnmkSpawner : MonoBehaviour {
         {
             foreach(GameObject bullet in bullets)
             {
-                bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f);
+                if (bullet.activeSelf) bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f);
             }
             yield return null;
         }
