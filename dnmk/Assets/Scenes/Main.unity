@@ -313,10 +313,11 @@ MonoBehaviour:
   frequency: 0.5
   repeats: 10
   bulletAmount: 18
-  bulletSpeed: 5
-  bulletLifetime: 6
+  bulletSpeed: 2
+  bulletLifetime: 200
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
-  rotateSpeed: 52.07
+  rotateSpeed: 2
+  rotateEachBurstIndependently: 0
 --- !u!1 &1661761261
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,4 +365,5 @@ MonoBehaviour:
   bulletSpeed: 2
   bulletLifetime: 10
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
-  rotateSpeed: 1
+  rotateSpeed: 3
+  rotateEachBurstIndependently: 0

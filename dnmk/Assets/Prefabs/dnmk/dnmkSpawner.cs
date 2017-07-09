@@ -15,6 +15,7 @@ public class dnmkSpawner : MonoBehaviour {
     public float bulletLifetime;
     public GameObject dnmkPrefab;
     public float rotateSpeed;
+    public bool rotateEachBurstIndependently;
 
     private float lastSpawnTime;
     private bool spawnerActive;
@@ -23,7 +24,8 @@ public class dnmkSpawner : MonoBehaviour {
     void Start () {
         lastSpawnTime = 0;
         spawnerActive = true;
-	}
+        //if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -33,8 +35,6 @@ public class dnmkSpawner : MonoBehaviour {
             lastSpawnTime = Time.time;
             repeats -= 1;
         }
-
-        //if (rotateSpeed > 0) transform.RotateAround(transform.position, Vector3.forward, rotateSpeed * Time.deltaTime);
 
         if (repeats == 0)
         {
@@ -48,18 +48,28 @@ public class dnmkSpawner : MonoBehaviour {
         GameObject bulletCenterPivot = new GameObject("BulletPivot");
         bulletCenterPivot.transform.position = transform.position;
         bulletCenterPivot.transform.SetParent(transform, true);
+        GameObject[] bullets = new GameObject[bulletAmount];
 
         for(int i = 0; i < bulletAmount; i++)
         {
             GameObject bullet = Instantiate(dnmkPrefab, bulletCenterPivot.transform, false);
-            //TODO: fix to make it perfect angle specified
-            bullet.transform.Rotate(new Vector3(0.0f, 0.0f, totalAngle/2 + (totalAngle / (float)bulletAmount) * i)); // circle-type spawner
-            bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
-            //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse);
+            bullet.transform.RotateAround(bulletCenterPivot.transform.position, Vector3.forward, -totalAngle/2 + (totalAngle / ((float)bulletAmount-1)) * i); // circle-type spawner
+            bullet.transform.Translate(-bulletCenterPivot.transform.up);
+            //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f);
+            //bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
+            //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position;
+            //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward);
+            bullets[i] = bullet;
             Destroy(bullet, bulletLifetime);
         }
 
-        //if (rotateSpeed > 0) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
+        foreach(GameObject bullet in bullets)
+        {
+            bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse);
+        }
+
+        bulletCenterPivot.transform.localRotation = transform.localRotation;
+        //if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
         //- for individual rotation of each circle
         Destroy(bulletCenterPivot, bulletLifetime);
         yield return null;
@@ -67,6 +77,7 @@ public class dnmkSpawner : MonoBehaviour {
 
     private IEnumerator RotateBulletCenterPivot(Transform pivot)
     {
+        Debug.Log("Starting rotation coroutine");
         while(pivot != null)
         {   
             pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime);
