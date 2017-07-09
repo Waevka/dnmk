@@ -13,6 +13,13 @@ public class DnmkGameManager : MonoBehaviour {
         get { return dnmkBulletPool; }
     }
 
+    [SerializeField]
+    private DnmkPlayingField dnmkPlayingField = null;
+    public DnmkPlayingField DnmkPlayingField
+    {
+        get { return dnmkPlayingField; }
+    }
+
     private void Awake()
     {
         if (Instance != null)

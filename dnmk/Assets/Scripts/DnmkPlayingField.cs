@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DnmkPlayingField : MonoBehaviour {
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    public float Width;
+    public float Height;
+    public float BulletDeactivationMargin;
     public Vector2 Center { get; private set; }
 
     private void Awake()
