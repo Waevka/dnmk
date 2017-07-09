@@ -98,7 +98,6 @@ public class dnmkSpawner : MonoBehaviour {
             pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
             yield return null;
         }
-        yield return null;
     }
 
     private IEnumerator PivotCleanup(GameObject pivot, float time)
@@ -123,6 +122,5 @@ public class dnmkSpawner : MonoBehaviour {
             }
             yield return null;
         }
-        yield return null;
     }
 }
