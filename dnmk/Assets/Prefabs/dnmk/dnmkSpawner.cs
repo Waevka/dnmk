@@ -24,7 +24,7 @@ public class dnmkSpawner : MonoBehaviour {
     void Start () {
         lastSpawnTime = 0;
         spawnerActive = true;
-        //if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
+        if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
     }
 	
 	// Update is called once per frame
@@ -53,24 +53,27 @@ public class dnmkSpawner : MonoBehaviour {
         for(int i = 0; i < bulletAmount; i++)
         {
             GameObject bullet = Instantiate(dnmkPrefab, bulletCenterPivot.transform, false);
-            bullet.transform.RotateAround(bulletCenterPivot.transform.position, Vector3.forward, -totalAngle/2 + (totalAngle / ((float)bulletAmount-1)) * i); // circle-type spawner
-            bullet.transform.Translate(-bulletCenterPivot.transform.up);
-            //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f);
-            //bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
-            //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position;
-            //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward);
+            bulletCenterPivot.transform.rotation = transform.rotation;
+
+            bullet.transform.RotateAround(bulletCenterPivot.transform.position,
+                Vector3.forward,
+                -totalAngle/2 + (totalAngle / ((float)bulletAmount-1)) * i
+                ); // circle-type spawner
+
+            //Unused transformations:
+            //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
+            //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f); - same as ^, but with realtive path length
+            //bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed; - add velocity immediateli instead of AddRelativeForce
+            //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position; - change center of rigidbody mass
+            //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward); - move rigidbody without using force
+            //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
             bullets[i] = bullet;
             Destroy(bullet, bulletLifetime);
         }
-
-        foreach(GameObject bullet in bullets)
-        {
-            bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse);
-        }
-
-        bulletCenterPivot.transform.localRotation = transform.localRotation;
-        //if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
-        //- for individual rotation of each circle
+        
+        if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
+        // for individual rotation of each inside circle
+        StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
         Destroy(bulletCenterPivot, bulletLifetime);
         yield return null;
     }
@@ -80,7 +83,7 @@ public class dnmkSpawner : MonoBehaviour {
         Debug.Log("Starting rotation coroutine");
         while(pivot != null)
         {   
-            pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime);
+            pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
             yield return null;
         }
         yield return null;
@@ -90,5 +93,22 @@ public class dnmkSpawner : MonoBehaviour {
     {
         yield return new WaitUntil(() => transform.childCount == 0);
         Destroy(gameObject);
+    }
+
+    private IEnumerator MoveBullets(GameObject[] bullets, Transform pivot)
+    {
+        Debug.Log("Starting MoveBullets coroutine");
+
+        while (pivot != null)
+        {
+            foreach(GameObject bullet in bullets)
+            {
+                bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f);
+            }
+            yield return null;
+        }
+
+        Debug.Log("Finishing MoveBullets coroutine");
+        yield return null;
     }
 }
