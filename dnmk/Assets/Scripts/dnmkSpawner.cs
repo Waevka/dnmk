@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,22 +14,31 @@ public class dnmkSpawner : MonoBehaviour {
     public float bulletSpeed;
     [Range(5, 1000)]
     public float bulletLifetime;
-    public GameObject dnmkPrefab;
     public float rotateSpeed;
     public bool rotateEachBurstIndependently;
+    
+    // Prefabs
+    public ParticleSystem dnmkParticleSystem;
+    public GameObject dnmkPrefab;
 
     private float lastSpawnTime;
     private bool spawnerActive;
     private DnmkGameManager GameManager;
-    private ParticleSystem dnmkParticleSystem;
 
     private void Awake()
     {
         lastSpawnTime = 0;
         spawnerActive = true;
         GameManager = DnmkGameManager.Instance;
-        dnmkParticleSystem = GetComponent<ParticleSystem>();
+        if(dnmkParticleSystem != null && GameManager != null)
+        {   
+            if(dnmkParticleSystem.trigger.GetCollider(0) == null)
+            {
+                SetupBulletPlayingFieldCollider();
+            }
+        }
     }
+
     // Use this for initialization
     void Start () {
         if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
@@ -39,8 +49,8 @@ public class dnmkSpawner : MonoBehaviour {
 	void FixedUpdate () {
 		if(Time.time > lastSpawnTime + frequency && spawnerActive)
         {
-            lastSpawnTime = Time.time;
             StartCoroutine(SpawnBullets());
+            lastSpawnTime = Time.time;
             repeats -= 1;
         }
 
@@ -106,27 +116,32 @@ public class dnmkSpawner : MonoBehaviour {
         yield return null;
     }
 
+    // This method rotates the selected pivot around, with their child bullets.
     private IEnumerator RotateBulletCenterPivot(Transform pivot)
     {
-        while(pivot != null)
+        while(pivot != null) // Until the pivot is destroyed by the clean up functions
         {   
             pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
             yield return null;
         }
     }
 
+    // Deletes the pivots after the bullets reach their lifetime or collide with playing field boundary.
     private IEnumerator PivotCleanup(GameObject pivot, float time)
     {
-        yield return new WaitUntil(() => pivot.transform.childCount == 0);
+        float rotationStartTime = Time.time;
+        yield return new WaitUntil(() => pivot.transform.childCount == 0 && Time.time > (rotationStartTime + time));
         Destroy(pivot, 0.2f);
     }
 
+    // Deletes the spawners after all bullet burst have been shot, and no more bullets exist.
     private IEnumerator SpawnerCleanup()
     {
         yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
         Destroy(gameObject);
     }
 
+    [System.Obsolete("Bullets are not GameObjects anymore, this is an old implementation to move bullets.")]
     private IEnumerator MoveBullets(GameObject[] bullets, Transform pivot)
     {
         while (pivot != null)
@@ -137,5 +152,12 @@ public class dnmkSpawner : MonoBehaviour {
             }
             yield return null;
         }
+    }
+
+    // Assigns a playing field boundary collider (to destroy bullets after they leave the screen),
+    // if the collider is not assigned manually in Particle System "Trigger" settings tab
+    private void SetupBulletPlayingFieldCollider()
+    {
+        dnmkParticleSystem.trigger.SetCollider(0, GameManager.DnmkPlayingField.GetPlayingFieldCollider());
     }
 }
