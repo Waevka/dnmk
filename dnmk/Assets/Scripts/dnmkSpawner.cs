@@ -97,7 +97,13 @@ public class dnmkSpawner : MonoBehaviour {
                 emitParams.axisOfRotation = Vector3.forward;
                 emitParams.rotation = 45.0f;
                // emitParams.angularVelocity = 30.0f;
-                dnmkParticleSystem.Emit(emitParams, 1);
+               if(dnmkParticleSystem.subEmitters.subEmittersCount > 0 && repeats - 1 < dnmkParticleSystem.subEmitters.subEmittersCount)
+                {
+                    dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats - 1).Emit(emitParams, 1);
+                } else
+                {
+                    dnmkParticleSystem.Emit(emitParams, 1);
+                }
             }
             //Unused transformations:
             //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
@@ -108,8 +114,12 @@ public class dnmkSpawner : MonoBehaviour {
             //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
             //bullets[i] = bullet;
         }
-        
-        if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
+
+        if (rotateSpeed > 0 && rotateEachBurstIndependently && repeats-1 < dnmkParticleSystem.subEmitters.subEmittersCount)
+        {
+            Debug.Log(repeats);
+            StartCoroutine(RotateBulletCenterPivot(dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats-1).gameObject.transform));
+        } 
         // for individual rotation of each inside circle
         //StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
