@@ -20,12 +20,14 @@ public class dnmkSpawner : MonoBehaviour {
     private float lastSpawnTime;
     private bool spawnerActive;
     private DnmkGameManager GameManager;
+    private ParticleSystem dnmkParticleSystem;
 
     private void Awake()
     {
         lastSpawnTime = 0;
         spawnerActive = true;
         GameManager = DnmkGameManager.Instance;
+        dnmkParticleSystem = GetComponent<ParticleSystem>();
     }
     // Use this for initialization
     void Start () {
@@ -54,13 +56,18 @@ public class dnmkSpawner : MonoBehaviour {
         bulletCenterPivot.transform.position = transform.position;
         bulletCenterPivot.transform.SetParent(transform, true);
         GameObject[] bullets = new GameObject[bulletAmount];
+        
+        var emitParams = new ParticleSystem.EmitParams();
+        emitParams.position = bulletCenterPivot.transform.localPosition;
+        emitParams.velocity = Vector3.down;
 
-        for(int i = 0; i < bulletAmount; i++)
+        for (int i = 0; i < bulletAmount; i++)
         {
-            GameObject bullet = GameManager.DnmkBulletPool.RequestBulletFromPool();
-            bullet.transform.position   = bulletCenterPivot.transform.position;
-            bullet.transform.parent     = bulletCenterPivot.transform;
-            bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
+            Transform bulletTransform = bulletCenterPivot.transform;
+            //GameObject bullet = GameManager.DnmkBulletPool.RequestBulletFromPool();
+            //bullet.transform.position   = bulletCenterPivot.transform.position;
+            //bullet.transform.parent     = bulletCenterPivot.transform;
+            //bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
 
             bulletCenterPivot.transform.rotation = transform.rotation;
 
@@ -68,12 +75,20 @@ public class dnmkSpawner : MonoBehaviour {
              * If the total angle is 360, divide it evenly.
              * Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are shown.
              */
-            bullet.transform.RotateAround(
+            bulletTransform.transform.RotateAround(
                 bulletCenterPivot.transform.position,
                 Vector3.forward,
                 totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
                 );
 
+            if(dnmkParticleSystem != null)
+            {
+                emitParams.velocity = bulletTransform.transform.right;
+                emitParams.axisOfRotation = Vector3.forward;
+                emitParams.rotation = 45.0f;
+               // emitParams.angularVelocity = 30.0f;
+                dnmkParticleSystem.Emit(emitParams, 1);
+            }
             //Unused transformations:
             //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
             //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f); - same as ^, but with realtive path length
@@ -81,12 +96,12 @@ public class dnmkSpawner : MonoBehaviour {
             //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position; - change center of rigidbody mass
             //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward); - move rigidbody without using force
             //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
-            bullets[i] = bullet;
+            //bullets[i] = bullet;
         }
         
         if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
         // for individual rotation of each inside circle
-        StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
+        //StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
     }
