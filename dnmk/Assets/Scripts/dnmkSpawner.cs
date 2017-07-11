@@ -105,10 +105,8 @@ public class dnmkSpawner : MonoBehaviour {
         {
             StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform));
         }
-
-        // for individual rotation of each inside circle
-        //StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
-        //StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
+        
+        StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
     }
