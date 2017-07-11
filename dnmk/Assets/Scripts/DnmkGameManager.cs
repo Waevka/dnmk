@@ -7,18 +7,26 @@ public class DnmkGameManager : MonoBehaviour {
     public static DnmkGameManager Instance { get; private set; }
 
     [SerializeField]
+    private DnmkPlayingField dnmkPlayingField = null;
+    public DnmkPlayingField DnmkPlayingField
+    {
+        get { return dnmkPlayingField; }
+    }
+
+    [SerializeField]
+    private DnmkParticleSystemPool dnmkParticleSystemPool = null;
+    public DnmkParticleSystemPool DnmkParticleSystemPool
+    {
+        get { return dnmkParticleSystemPool; }
+    }
+
+    [SerializeField]
     private DnmkBulletPool dnmkBulletPool = null;
     public DnmkBulletPool DnmkBulletPool
     {
         get { return dnmkBulletPool; }
     }
 
-    [SerializeField]
-    private DnmkPlayingField dnmkPlayingField = null;
-    public DnmkPlayingField DnmkPlayingField
-    {
-        get { return dnmkPlayingField; }
-    }
 
     private void Awake()
     {

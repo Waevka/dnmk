@@ -18,7 +18,7 @@ public class dnmkSpawner : MonoBehaviour {
     public bool rotateEachBurstIndependently;
     
     // Prefabs
-    public ParticleSystem dnmkParticleSystem;
+    //private ParticleSystem dnmkParticleSystem;
     public GameObject dnmkPrefab;
 
     private float lastSpawnTime;
@@ -29,18 +29,17 @@ public class dnmkSpawner : MonoBehaviour {
     {
         lastSpawnTime = 0;
         spawnerActive = true;
-        GameManager = DnmkGameManager.Instance;
-        if(dnmkParticleSystem != null && GameManager != null)
-        {   
-            if(dnmkParticleSystem.trigger.GetCollider(0) == null)
-            {
-                SetupBulletPlayingFieldCollider();
-            }
-        }
     }
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
+        GameManager = DnmkGameManager.Instance;
+        if (GameManager == null)
+        {
+            Debug.LogWarning("GameManager is null - possibly not enough time to initialize!", gameObject);
+        }
+
         if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
         StartCoroutine(SpawnerCleanup());
     }
@@ -71,6 +70,10 @@ public class dnmkSpawner : MonoBehaviour {
         emitParams.position = bulletCenterPivot.transform.localPosition;
         emitParams.velocity = Vector3.down;
 
+        GameObject subParticleSystem = GameManager.DnmkParticleSystemPool.RequestParticleSystemFromPool();
+        if (subParticleSystem == null) Debug.Log("HELP");
+        subParticleSystem.transform.parent = bulletCenterPivot.transform;
+
         for (int i = 0; i < bulletAmount; i++)
         {
             Transform bulletTransform = bulletCenterPivot.transform;
@@ -91,19 +94,19 @@ public class dnmkSpawner : MonoBehaviour {
                 totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
                 );
 
-            if(dnmkParticleSystem != null)
+            if(subParticleSystem != null)
             {
                 emitParams.velocity = bulletTransform.transform.right;
                 emitParams.axisOfRotation = Vector3.forward;
                 emitParams.rotation = 45.0f;
-               // emitParams.angularVelocity = 30.0f;
-               if(dnmkParticleSystem.subEmitters.subEmittersCount > 0 && repeats - 1 < dnmkParticleSystem.subEmitters.subEmittersCount)
-                {
-                    dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats - 1).Emit(emitParams, 1);
-                } else
-                {
-                    dnmkParticleSystem.Emit(emitParams, 1);
-                }
+                // emitParams.angularVelocity = 30.0f;
+                //if(dnmkParticleSystem.subEmitters.subEmittersCount > 0 && repeats - 1 < dnmkParticleSystem.subEmitters.subEmittersCount)
+                // {
+                //     dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats - 1).Emit(emitParams, 1);
+                // } else
+                // {
+                subParticleSystem.GetComponent<ParticleSystem>().Emit(emitParams, 1);
+                //}
             }
             //Unused transformations:
             //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
@@ -114,14 +117,15 @@ public class dnmkSpawner : MonoBehaviour {
             //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
             //bullets[i] = bullet;
         }
-
-        if (rotateSpeed > 0 && rotateEachBurstIndependently && repeats-1 < dnmkParticleSystem.subEmitters.subEmittersCount)
+        
+        if (rotateSpeed > 0 && rotateEachBurstIndependently)
         {
-            Debug.Log(repeats);
-            StartCoroutine(RotateBulletCenterPivot(dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats-1).gameObject.transform));
-        } 
+            StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform));
+        }
+
         // for individual rotation of each inside circle
         //StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
+        //StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
     }
@@ -136,6 +140,15 @@ public class dnmkSpawner : MonoBehaviour {
         }
     }
 
+    private IEnumerator ParticleSystemCleanup(GameObject particleSystemHolder, float time)
+    {
+        float spawnerLifeTime = Time.time;
+        ParticleSystem particleSystem = particleSystemHolder.GetComponent<ParticleSystem>();
+        yield return new WaitUntil(() => particleSystem.particleCount == 0 && Time.time > (spawnerLifeTime + time));
+        GameManager.DnmkParticleSystemPool.ReturnParticleSystemToPool(particleSystemHolder);
+
+    }
+
     // Deletes the pivots after the bullets reach their lifetime or collide with playing field boundary.
     private IEnumerator PivotCleanup(GameObject pivot, float time)
     {
@@ -144,7 +157,7 @@ public class dnmkSpawner : MonoBehaviour {
         Destroy(pivot, 0.2f);
     }
 
-    // Deletes the spawners after all bullet burst have been shot, and no more bullets exist.
+    // Deletes the spawners after all bullet burst have been shot (repeats == 0), and no more particle systems exist (childcount == 0).
     private IEnumerator SpawnerCleanup()
     {
         yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
@@ -164,10 +177,4 @@ public class dnmkSpawner : MonoBehaviour {
         }
     }
 
-    // Assigns a playing field boundary collider (to destroy bullets after they leave the screen),
-    // if the collider is not assigned manually in Particle System "Trigger" settings tab
-    private void SetupBulletPlayingFieldCollider()
-    {
-        dnmkParticleSystem.trigger.SetCollider(0, GameManager.DnmkPlayingField.GetPlayingFieldCollider());
-    }
 }
