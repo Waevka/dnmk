@@ -60,62 +60,45 @@ public class dnmkSpawner : MonoBehaviour {
 	}
 
     private IEnumerator SpawnBullets()
-    {
+    {   
+        // Create a pivot for attaching Particle System/Systems to it.
         GameObject bulletCenterPivot = new GameObject("BulletPivot");
         bulletCenterPivot.transform.position = transform.position;
         bulletCenterPivot.transform.SetParent(transform, true);
-        GameObject[] bullets = new GameObject[bulletAmount];
         
-        var emitParams = new ParticleSystem.EmitParams();
-        emitParams.position = bulletCenterPivot.transform.localPosition;
-        emitParams.velocity = Vector3.down;
-
+        // Request a ParticleSystem from pool and attach it to pivot.
         GameObject subParticleSystem = GameManager.DnmkParticleSystemPool.RequestParticleSystemFromPool();
-        if (subParticleSystem == null) Debug.Log("HELP");
+        subParticleSystem.transform.position = bulletCenterPivot.transform.position;
         subParticleSystem.transform.parent = bulletCenterPivot.transform;
 
+        // Set the parameters of the bullets: speed, color, sprite, etc.
+        // Velocity sets the direction of the bullet.
+        var emitParameters = new ParticleSystem.EmitParams();
+        emitParameters.position = bulletCenterPivot.transform.localPosition;
+        emitParameters.velocity = Vector3.down;
+        emitParameters.axisOfRotation = Vector3.forward;
+
         for (int i = 0; i < bulletAmount; i++)
-        {
+        {   
+            // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
             Transform bulletTransform = bulletCenterPivot.transform;
-            //GameObject bullet = GameManager.DnmkBulletPool.RequestBulletFromPool();
-            //bullet.transform.position   = bulletCenterPivot.transform.position;
-            //bullet.transform.parent     = bulletCenterPivot.transform;
-            //bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
+            bulletCenterPivot.transform.rotation = transform.rotation; // keep up with the rotating parent
 
-            bulletCenterPivot.transform.rotation = transform.rotation;
-
-            /* Circle type spawner
-             * If the total angle is 360, divide it evenly.
-             * Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are shown.
-             */
+            // Circle type spawner formula:
+            // If the total angle is 360, divide it evenly.
+            // Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are lined with bullets.
+            // Velocity is now calculated.
             bulletTransform.transform.RotateAround(
                 bulletCenterPivot.transform.position,
                 Vector3.forward,
                 totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
                 );
 
-            if(subParticleSystem != null)
-            {
-                emitParams.velocity = bulletTransform.transform.right;
-                emitParams.axisOfRotation = Vector3.forward;
-                emitParams.rotation = 45.0f;
-                // emitParams.angularVelocity = 30.0f;
-                //if(dnmkParticleSystem.subEmitters.subEmittersCount > 0 && repeats - 1 < dnmkParticleSystem.subEmitters.subEmittersCount)
-                // {
-                //     dnmkParticleSystem.subEmitters.GetSubEmitterSystem(repeats - 1).Emit(emitParams, 1);
-                // } else
-                // {
-                subParticleSystem.GetComponent<ParticleSystem>().Emit(emitParams, 1);
-                //}
-            }
-            //Unused transformations:
-            //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
-            //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f); - same as ^, but with realtive path length
-            //bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed; - add velocity immediateli instead of AddRelativeForce
-            //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position; - change center of rigidbody mass
-            //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward); - move rigidbody without using force
-            //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
-            //bullets[i] = bullet;
+            // Update more of the parameters
+            emitParameters.velocity = bulletTransform.transform.right;
+            // color etc.
+
+            subParticleSystem.GetComponent<ParticleSystem>().Emit(emitParameters, 1);
         }
         
         if (rotateSpeed > 0 && rotateEachBurstIndependently)
@@ -140,6 +123,7 @@ public class dnmkSpawner : MonoBehaviour {
         }
     }
 
+    // Returns the Particle System back to the pool, when it has no more particles.
     private IEnumerator ParticleSystemCleanup(GameObject particleSystemHolder, float time)
     {
         float spawnerLifeTime = Time.time;
