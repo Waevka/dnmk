@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114765102931769836}
   - component: {fileID: 212494171996124530}
   m_Layer: 0
-  m_Name: dnmkSpawner
+  m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,7 +91,7 @@ MonoBehaviour:
   bulletLifetime: 7
   rotateSpeed: 2
   rotateEachBurstIndependently: 1
-  dnmkParticleSystem: {fileID: 198483671797633644}
+  burstRotateSpeeds: []
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
 --- !u!198 &198483671797633644
 ParticleSystem:

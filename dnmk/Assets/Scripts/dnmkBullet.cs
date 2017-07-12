@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class dnmkBullet : MonoBehaviour {
+public class DnmkBullet : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

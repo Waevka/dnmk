@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 199627706896481338}
   - component: {fileID: 198637164080596018}
   m_Layer: 8
-  m_Name: dnmkParticleSystem
+  m_Name: DnmkParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,7 +105,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10.3
+      scalar: 30
       minScalar: 5
       maxCurve:
         serializedVersion: 2

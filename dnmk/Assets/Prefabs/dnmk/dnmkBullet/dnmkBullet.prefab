@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 50310491238049882}
   - component: {fileID: 58042101675895064}
   m_Layer: 8
-  m_Name: dnmkBullet
+  m_Name: DnmkBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 392119919}
   - component: {fileID: 392119918}
   m_Layer: 0
-  m_Name: dnmkSpawner
+  m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,8 +281,101 @@ MonoBehaviour:
   bulletAmount: 113
   bulletSpeed: 2
   bulletLifetime: 7
-  rotateSpeed: 2
+  rotateSpeed: 1.49
   rotateEachBurstIndependently: 1
+  burstRotateSpeeds: []
+  dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
+--- !u!1 &669977539
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 669977540}
+  - component: {fileID: 669977542}
+  - component: {fileID: 669977541}
+  m_Layer: 0
+  m_Name: DnmkSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &669977540
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 669977539}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1547933593}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &669977541
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 669977539}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Color: {r: 1, g: 0.6544118, b: 0.6544118, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.16, y: 0.16}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+--- !u!114 &669977542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 669977539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c523df0b16b031a49a02885a67e15fb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalAngle: 360
+  frequency: 0.5
+  repeats: 5
+  bulletAmount: 113
+  bulletSpeed: 2
+  bulletLifetime: 7
+  rotateSpeed: 1.49
+  rotateEachBurstIndependently: 1
+  burstRotateSpeeds: []
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
 --- !u!1 &670018416
 GameObject:
@@ -515,7 +608,7 @@ GameObject:
   - component: {fileID: 1352180099}
   - component: {fileID: 1352180098}
   m_Layer: 0
-  m_Name: dnmkSpawner
+  m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -577,12 +670,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalAngle: 360
   frequency: 0.5
-  repeats: 2
+  repeats: 10
   bulletAmount: 225
   bulletSpeed: 2
   bulletLifetime: 7
   rotateSpeed: 3.71
   rotateEachBurstIndependently: 1
+  burstRotateSpeeds: []
   dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
 --- !u!1 &1547933592
 GameObject:
@@ -593,7 +687,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1547933593}
   m_Layer: 0
-  m_Name: dnmkEvent
+  m_Name: DnmkEvent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -611,7 +705,7 @@ Transform:
   m_Children:
   - {fileID: 1644818234}
   - {fileID: 392119915}
-  - {fileID: 1661761262}
+  - {fileID: 669977540}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -629,55 +723,6 @@ Transform:
   m_Father: {fileID: 1547933593}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1661761261
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1661761262}
-  - component: {fileID: 1661761263}
-  m_Layer: 0
-  m_Name: dnmkSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1661761262
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1661761261}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1547933593}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1661761263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1661761261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c523df0b16b031a49a02885a67e15fb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalAngle: 360
-  frequency: 0.3
-  repeats: 4
-  bulletAmount: 159
-  bulletSpeed: 2
-  bulletLifetime: 7
-  rotateSpeed: 0
-  rotateEachBurstIndependently: 1
-  dnmkPrefab: {fileID: 1186505045414222, guid: 814bd7ff62d07b142ad013179841ee04, type: 2}
 --- !u!1 &1692958057
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,6 +791,11 @@ Prefab:
     - target: {fileID: 4026212094820074, guid: b8ee9b863b9c2bb47be31c7feea9c1c5, type: 2}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114135492180073272, guid: b8ee9b863b9c2bb47be31c7feea9c1c5,
+        type: 2}
+      propertyPath: BulletDeactivationMargin
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b8ee9b863b9c2bb47be31c7feea9c1c5, type: 2}

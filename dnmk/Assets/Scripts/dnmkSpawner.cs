@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class dnmkSpawner : MonoBehaviour {
+public class DnmkSpawner : MonoBehaviour {
 
     [Range(1,360)]
     public float totalAngle;
@@ -16,19 +16,27 @@ public class dnmkSpawner : MonoBehaviour {
     public float bulletLifetime;
     public float rotateSpeed;
     public bool rotateEachBurstIndependently;
-    
+    [Tooltip("Specify rotation speed for each of the bursts.")]
+    public float[] burstRotateSpeeds; // TODO: size dependent on OnInspectorGui()
+     
     // Prefabs
     //private ParticleSystem dnmkParticleSystem;
     public GameObject dnmkPrefab;
 
     private float lastSpawnTime;
     private bool spawnerActive;
+    private int currentRepeat;
     private DnmkGameManager GameManager;
 
     private void Awake()
     {
         lastSpawnTime = 0;
+        currentRepeat = 0;
         spawnerActive = true;
+        burstRotateSpeeds = new float[repeats];
+        for (int i = 0; i < repeats; i++) burstRotateSpeeds[i] = rotateSpeed;
+        // Temporarily assign same speed to all bursts
+        // TODO: until the GUI is done
     }
 
     // Use this for initialization
@@ -40,7 +48,7 @@ public class dnmkSpawner : MonoBehaviour {
             Debug.LogWarning("GameManager is null - possibly not enough time to initialize!", gameObject);
         }
 
-        if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
+        if (rotateSpeed != 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform, rotateSpeed));
         StartCoroutine(SpawnerCleanup());
     }
 	
@@ -48,18 +56,18 @@ public class dnmkSpawner : MonoBehaviour {
 	void FixedUpdate () {
 		if(Time.time > lastSpawnTime + frequency && spawnerActive)
         {
-            StartCoroutine(SpawnBullets());
+            StartCoroutine(SpawnBullets(currentRepeat));
             lastSpawnTime = Time.time;
-            repeats -= 1;
+            currentRepeat++;
         }
 
-        if (repeats == 0)
+        if (currentRepeat == repeats)
         {
             spawnerActive = false;
         }
 	}
 
-    private IEnumerator SpawnBullets()
+    private IEnumerator SpawnBullets(int currentRepeat)
     {   
         // Create a pivot for attaching Particle System/Systems to it.
         GameObject bulletCenterPivot = new GameObject("BulletPivot");
@@ -101,9 +109,9 @@ public class dnmkSpawner : MonoBehaviour {
             subParticleSystem.GetComponent<ParticleSystem>().Emit(emitParameters, 1);
         }
         
-        if (rotateSpeed > 0 && rotateEachBurstIndependently)
+        if (rotateSpeed != 0 && rotateEachBurstIndependently)
         {
-            StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform));
+            StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform, burstRotateSpeeds[currentRepeat]));
         }
         
         StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
@@ -112,11 +120,11 @@ public class dnmkSpawner : MonoBehaviour {
     }
 
     // This method rotates the selected pivot around, with their child bullets.
-    private IEnumerator RotateBulletCenterPivot(Transform pivot)
+    private IEnumerator RotateBulletCenterPivot(Transform pivot, float pivotRotateSpeed)
     {
         while(pivot != null) // Until the pivot is destroyed by the clean up functions
         {   
-            pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
+            pivot.RotateAround(pivot.transform.position, Vector3.forward, pivotRotateSpeed * Time.deltaTime * 10.0f);
             yield return null;
         }
     }
