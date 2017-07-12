@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class DnmkEvent : MonoBehaviour {
+//[CustomEditor(typeof(DnmkSpawner))]
+public class DnmkSpawnerInspector : Editor {
 
 	// Use this for initialization
 	void Start () {
@@ -13,4 +15,9 @@ public class DnmkEvent : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public override void OnInspectorGUI()
+    {
+
+    }
 }

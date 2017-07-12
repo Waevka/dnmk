@@ -22,6 +22,11 @@ public class DnmkPlayingField : MonoBehaviour {
         GameManager = DnmkGameManager.Instance;
     }
 
+    public BoxCollider2D GetPlayingFieldCollider()
+    {
+        return GetComponent<BoxCollider2D>();
+    }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         GameManager.DnmkBulletPool.ReturnBulletToPool(collision.gameObject);

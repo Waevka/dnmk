@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class dnmkSpawner : MonoBehaviour {
+public class DnmkSpawner : MonoBehaviour {
 
     [Range(1,360)]
     public float totalAngle;
@@ -13,23 +14,41 @@ public class dnmkSpawner : MonoBehaviour {
     public float bulletSpeed;
     [Range(5, 1000)]
     public float bulletLifetime;
-    public GameObject dnmkPrefab;
     public float rotateSpeed;
     public bool rotateEachBurstIndependently;
+    [Tooltip("Specify rotation speed for each of the bursts.")]
+    public float[] burstRotateSpeeds; // TODO: size dependent on OnInspectorGui()
+     
+    // Prefabs
+    //private ParticleSystem dnmkParticleSystem;
+    public GameObject dnmkPrefab;
 
     private float lastSpawnTime;
     private bool spawnerActive;
+    private int currentRepeat;
     private DnmkGameManager GameManager;
 
     private void Awake()
     {
         lastSpawnTime = 0;
+        currentRepeat = 0;
         spawnerActive = true;
-        GameManager = DnmkGameManager.Instance;
+        burstRotateSpeeds = new float[repeats];
+        for (int i = 0; i < repeats; i++) burstRotateSpeeds[i] = rotateSpeed;
+        // Temporarily assign same speed to all bursts
+        // TODO: until the GUI is done
     }
+
     // Use this for initialization
-    void Start () {
-        if (rotateSpeed > 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform));
+    void Start ()
+    {
+        GameManager = DnmkGameManager.Instance;
+        if (GameManager == null)
+        {
+            Debug.LogWarning("GameManager is null - possibly not enough time to initialize!", gameObject);
+        }
+
+        if (rotateSpeed != 0 && !rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(transform, rotateSpeed));
         StartCoroutine(SpawnerCleanup());
     }
 	
@@ -37,81 +56,105 @@ public class dnmkSpawner : MonoBehaviour {
 	void FixedUpdate () {
 		if(Time.time > lastSpawnTime + frequency && spawnerActive)
         {
+            StartCoroutine(SpawnBullets(currentRepeat));
             lastSpawnTime = Time.time;
-            StartCoroutine(SpawnBullets());
-            repeats -= 1;
+            currentRepeat++;
         }
 
-        if (repeats == 0)
+        if (currentRepeat == repeats)
         {
             spawnerActive = false;
         }
 	}
 
-    private IEnumerator SpawnBullets()
-    {
+    private IEnumerator SpawnBullets(int currentRepeat)
+    {   
+        // Create a pivot for attaching Particle System/Systems to it.
         GameObject bulletCenterPivot = new GameObject("BulletPivot");
         bulletCenterPivot.transform.position = transform.position;
         bulletCenterPivot.transform.SetParent(transform, true);
-        GameObject[] bullets = new GameObject[bulletAmount];
+        
+        // Request a ParticleSystem from pool and attach it to pivot.
+        GameObject subParticleSystem = GameManager.DnmkParticleSystemPool.RequestParticleSystemFromPool();
+        subParticleSystem.transform.position = bulletCenterPivot.transform.position;
+        subParticleSystem.transform.parent = bulletCenterPivot.transform;
 
-        for(int i = 0; i < bulletAmount; i++)
-        {
-            GameObject bullet = GameManager.DnmkBulletPool.RequestBulletFromPool();
-            bullet.transform.position   = bulletCenterPivot.transform.position;
-            bullet.transform.parent     = bulletCenterPivot.transform;
-            bullet.transform.rotation   = bulletCenterPivot.transform.rotation;
+        // Set the parameters of the bullets: speed, color, sprite, etc.
+        // Velocity sets the direction of the bullet.
+        var emitParameters = new ParticleSystem.EmitParams();
+        emitParameters.position = bulletCenterPivot.transform.localPosition;
+        emitParameters.velocity = Vector3.down;
+        emitParameters.axisOfRotation = Vector3.forward;
 
-            bulletCenterPivot.transform.rotation = transform.rotation;
+        for (int i = 0; i < bulletAmount; i++)
+        {   
+            // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
+            Transform bulletTransform = bulletCenterPivot.transform;
+            bulletCenterPivot.transform.rotation = transform.rotation; // keep up with the rotating parent
 
-            /* Circle type spawner
-             * If the total angle is 360, divide it evenly.
-             * Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are shown.
-             */
-            bullet.transform.RotateAround(
+            // Circle type spawner formula:
+            // If the total angle is 360, divide it evenly.
+            // Else it will be divided so that both angle sides have bullets on them, and the edges of the angle are lined with bullets.
+            // Velocity is now calculated.
+            bulletTransform.transform.RotateAround(
                 bulletCenterPivot.transform.position,
                 Vector3.forward,
                 totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
                 );
 
-            //Unused transformations:
-            //bullet.transform.Translate(-bulletCenterPivot.transform.up); - move bullet X units forward from spawn point
-            //bullet.transform.Translate(0.0f, Time.deltaTime * bulletSpeed, 0.0f); - same as ^, but with realtive path length
-            //bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed; - add velocity immediateli instead of AddRelativeForce
-            //bullet.GetComponent<Rigidbody2D>().centerOfMass = bulletCenterPivot.transform.position; - change center of rigidbody mass
-            //bullet.GetComponent<Rigidbody2D>().MovePosition(bullet.transform.forward); - move rigidbody without using force
-            //bullet.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0.0f, -1.0f * bulletSpeed), ForceMode2D.Impulse); - moves rigidbody using force forward
-            bullets[i] = bullet;
+            // Update more of the parameters
+            emitParameters.velocity = bulletTransform.transform.right;
+            // color etc.
+
+            subParticleSystem.GetComponent<ParticleSystem>().Emit(emitParameters, 1);
         }
         
-        if (rotateSpeed > 0 && rotateEachBurstIndependently) StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform)); 
-        // for individual rotation of each inside circle
-        StartCoroutine(MoveBullets(bullets, bulletCenterPivot.transform));
+        if (rotateSpeed != 0 && rotateEachBurstIndependently)
+        {
+            StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform, burstRotateSpeeds[currentRepeat]));
+        }
+        
+        StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
     }
 
-    private IEnumerator RotateBulletCenterPivot(Transform pivot)
+    // This method rotates the selected pivot around, with their child bullets.
+    private IEnumerator RotateBulletCenterPivot(Transform pivot, float pivotRotateSpeed)
     {
-        while(pivot != null)
+        while(pivot != null) // Until the pivot is destroyed by the clean up functions
         {   
-            pivot.RotateAround(pivot.transform.position, Vector3.forward, rotateSpeed * Time.deltaTime * 10.0f);
+            pivot.RotateAround(pivot.transform.position, Vector3.forward, pivotRotateSpeed * Time.deltaTime * 10.0f);
             yield return null;
         }
     }
 
+    // Returns the Particle System back to the pool, when it has no more particles.
+    private IEnumerator ParticleSystemCleanup(GameObject particleSystemHolder, float time)
+    {
+        float spawnerLifeTime = Time.time;
+        ParticleSystem particleSystem = particleSystemHolder.GetComponent<ParticleSystem>();
+        yield return new WaitUntil(() => particleSystem.particleCount == 0 && Time.time > (spawnerLifeTime + time));
+        GameManager.DnmkParticleSystemPool.ReturnParticleSystemToPool(particleSystemHolder);
+
+    }
+
+    // Deletes the pivots after the bullets reach their lifetime or collide with playing field boundary.
     private IEnumerator PivotCleanup(GameObject pivot, float time)
     {
-        yield return new WaitUntil(() => pivot.transform.childCount == 0);
+        float rotationStartTime = Time.time;
+        yield return new WaitUntil(() => pivot.transform.childCount == 0 && Time.time > (rotationStartTime + time));
         Destroy(pivot, 0.2f);
     }
 
+    // Deletes the spawners after all bullet burst have been shot (repeats == 0), and no more particle systems exist (childcount == 0).
     private IEnumerator SpawnerCleanup()
     {
         yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
         Destroy(gameObject);
     }
 
+    [System.Obsolete("Bullets are not GameObjects anymore, this is an old implementation to move bullets.")]
     private IEnumerator MoveBullets(GameObject[] bullets, Transform pivot)
     {
         while (pivot != null)
@@ -123,4 +166,5 @@ public class dnmkSpawner : MonoBehaviour {
             yield return null;
         }
     }
+
 }
