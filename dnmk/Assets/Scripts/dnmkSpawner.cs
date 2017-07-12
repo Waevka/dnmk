@@ -54,7 +54,7 @@ public class DnmkSpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if(Time.time > lastSpawnTime + frequency && spawnerActive)
+		if(Time.time > (lastSpawnTime + frequency) && spawnerActive)
         {
             StartCoroutine(SpawnBullets(currentRepeat));
             lastSpawnTime = Time.time;
@@ -86,11 +86,14 @@ public class DnmkSpawner : MonoBehaviour {
         emitParameters.velocity = Vector3.down;
         emitParameters.axisOfRotation = Vector3.forward;
 
+        // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
+        GameObject bulletTransform = new GameObject();
+        bulletTransform.transform.position = bulletCenterPivot.transform.position;
+        bulletTransform.transform.rotation = bulletCenterPivot.transform.rotation;
+
         for (int i = 0; i < bulletAmount; i++)
-        {   
-            // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
-            Transform bulletTransform = bulletCenterPivot.transform;
-            bulletCenterPivot.transform.rotation = transform.rotation; // keep up with the rotating parent
+        {
+            bulletTransform.transform.rotation = transform.rotation; // keep up with the rotating parent
 
             // Circle type spawner formula:
             // If the total angle is 360, divide it evenly.
@@ -99,9 +102,11 @@ public class DnmkSpawner : MonoBehaviour {
             bulletTransform.transform.RotateAround(
                 bulletCenterPivot.transform.position,
                 Vector3.forward,
-                totalAngle/2.0f + (totalAngle / ((totalAngle == 360.0f) ? ((float)bulletAmount) : ((float)bulletAmount - 1)) * i)
-                );
-
+                ((totalAngle == 360.0f) ? ( totalAngle / ((float)bulletAmount) ) :
+                   (270.0f - totalAngle/2.0f) + ( 0.0f + ((totalAngle / ((float)bulletAmount - 1)) * i))
+                )
+            );
+            Debug.Log(bulletCenterPivot.transform.rotation);
             // Update more of the parameters
             emitParameters.velocity = bulletTransform.transform.right;
             // color etc.
@@ -113,6 +118,7 @@ public class DnmkSpawner : MonoBehaviour {
         {
             StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform, burstRotateSpeeds[currentRepeat]));
         }
+
         
         StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
