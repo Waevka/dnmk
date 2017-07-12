@@ -87,7 +87,8 @@ public class DnmkSpawner : MonoBehaviour {
         emitParameters.axisOfRotation = Vector3.forward;
 
         // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
-        GameObject bulletTransform = new GameObject();
+        GameObject bulletTransform = new GameObject("BulletTransform");
+        bulletTransform.transform.parent = bulletCenterPivot.transform;
         bulletTransform.transform.position = bulletCenterPivot.transform.position;
         bulletTransform.transform.rotation = bulletCenterPivot.transform.rotation;
 
@@ -119,7 +120,7 @@ public class DnmkSpawner : MonoBehaviour {
             StartCoroutine(RotateBulletCenterPivot(bulletCenterPivot.transform, burstRotateSpeeds[currentRepeat]));
         }
 
-        
+        Destroy(bulletTransform, bulletLifetime);
         StartCoroutine(ParticleSystemCleanup(subParticleSystem, bulletLifetime));
         StartCoroutine(PivotCleanup(bulletCenterPivot, bulletLifetime));
         yield return null;
