@@ -107,7 +107,6 @@ public class DnmkSpawner : MonoBehaviour {
                    (270.0f - totalAngle/2.0f) + ( 0.0f + ((totalAngle / ((float)bulletAmount - 1)) * i))
                 )
             );
-            Debug.Log(bulletCenterPivot.transform.rotation);
             // Update more of the parameters
             emitParameters.velocity = bulletTransform.transform.right;
             // color etc.
