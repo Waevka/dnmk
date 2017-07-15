@@ -156,8 +156,8 @@ public class DnmkSpawner : MonoBehaviour {
     // Deletes the spawners after all bullet burst have been shot (repeats == 0), and no more particle systems exist (childcount == 0).
     private IEnumerator SpawnerCleanup()
     {
-        yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
-        Destroy(gameObject, 0.2f);
+        yield return new WaitUntil(() => transform.childCount == 0 && repeats == currentRepeat);
+        Destroy(gameObject, 0.1f);
     }
 
     [System.Obsolete("Bullets are not GameObjects anymore, this is an old implementation to move bullets.")]

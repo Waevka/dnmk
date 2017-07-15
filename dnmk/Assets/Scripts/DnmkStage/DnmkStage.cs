@@ -30,5 +30,23 @@ public class DnmkStage : MonoBehaviour, IDnmkReadyableObject
     public void StartEvents()
     {
         gameStartTime = Time.time;
+        StartCoroutine(EventStartInvoker());
+    }
+
+    IEnumerator EventStartInvoker()
+    {
+        for(int i = 0; i < dnmkEventList.Length; i++)
+        {
+            StartCoroutine(EventStarter(dnmkEventList[i], dnmkEventTime[i]));
+            yield return null;
+        }
+    }
+
+    IEnumerator EventStarter(DnmkEvent dnmkEvent, float eventStartTime)
+    {
+        yield return new WaitForSeconds(eventStartTime);
+        Debug.Log("Event started at " + Time.time);
+        dnmkEvent.gameObject.SetActive(true);
+
     }
 }

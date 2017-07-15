@@ -8,6 +8,8 @@ public class DnmkGameManager : MonoBehaviour {
     public static DnmkGameManager Instance { get; private set; }
     [SerializeField]
     private bool gameEnabled;
+    [SerializeField]
+    private int targetFrameRate; //TODO: edit in inspector
 
     [SerializeField]
     private DnmkPlayingField dnmkPlayingField = null;
@@ -40,6 +42,7 @@ public class DnmkGameManager : MonoBehaviour {
     private void Awake()
     {
         gameEnabled = false;
+        Application.targetFrameRate = 60;
         if (Instance != null)
         {
             Debug.LogWarning("Multiple instances of DnmkGameManager!", gameObject);
