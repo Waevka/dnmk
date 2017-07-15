@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DnmkParticleSystemPool : MonoBehaviour {
-
+public class DnmkParticleSystemPool : MonoBehaviour, IDnmkReadyableObject
+{
     public int queueSize;
     public GameObject defaultParticleSystemPrefab;
+    public bool IsReady { get; set; }
 
     [SerializeField]
     private Queue<GameObject> particleSystemPool;
@@ -15,6 +16,7 @@ public class DnmkParticleSystemPool : MonoBehaviour {
 
     private void Awake()
     {
+        IsReady = false;
         particleSystemPool = new Queue<GameObject>();
     }
 
@@ -28,6 +30,7 @@ public class DnmkParticleSystemPool : MonoBehaviour {
             SetupBulletPlayingFieldCollider(particleSystem.GetComponent<ParticleSystem>());
             particleSystemPool.Enqueue(particleSystem);
         }
+        IsReady = true;
     }
 	
 	// Update is called once per frame

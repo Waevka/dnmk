@@ -4,13 +4,25 @@ using UnityEngine;
 
 public class DnmkEvent : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private bool eventActive;
+
+    private void Awake()
+    {
+        eventActive = false;
+        gameObject.SetActive(false);
+        //In case we forget to set it in Inspector
+    }
+
+    private void Update()
+    {
+        if(transform.childCount == 0)
+        {
+            Destroy(gameObject, 0.2f);
+        }
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("Event enabled", gameObject);
+    }
 }

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DnmkBulletPool : MonoBehaviour {
-
+public class DnmkBulletPool : MonoBehaviour, IDnmkReadyableObject
+{
     public int queueSize;
     public GameObject defaultBulletPrefab;
+    public bool IsReady { get; set; }
 
     [SerializeField]
     private Queue<GameObject> bulletPool;
@@ -14,6 +15,7 @@ public class DnmkBulletPool : MonoBehaviour {
 
     private void Awake()
     {
+        IsReady = false;
         bulletPool = new Queue<GameObject>();
 
         for(int i = 0; i < queueSize; i++)
@@ -26,7 +28,7 @@ public class DnmkBulletPool : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-		
+        IsReady = true;
 	}
 	
 	// Update is called once per frame

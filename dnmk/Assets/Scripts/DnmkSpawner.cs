@@ -157,7 +157,7 @@ public class DnmkSpawner : MonoBehaviour {
     private IEnumerator SpawnerCleanup()
     {
         yield return new WaitUntil(() => transform.childCount == 0 && repeats == 0);
-        Destroy(gameObject);
+        Destroy(gameObject, 0.2f);
     }
 
     [System.Obsolete("Bullets are not GameObjects anymore, this is an old implementation to move bullets.")]

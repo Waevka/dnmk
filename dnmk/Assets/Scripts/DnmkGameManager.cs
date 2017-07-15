@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DnmkGameManager : MonoBehaviour {
 
     public static DnmkGameManager Instance { get; private set; }
+    [SerializeField]
+    private bool gameEnabled;
 
     [SerializeField]
     private DnmkPlayingField dnmkPlayingField = null;
@@ -34,23 +37,30 @@ public class DnmkGameManager : MonoBehaviour {
         get { return dnmkStage; }
     }
 
-
     private void Awake()
     {
+        gameEnabled = false;
         if (Instance != null)
         {
             Debug.LogWarning("Multiple instances of DnmkGameManager!", gameObject);
             return;
         }
         Instance = this;
+        StartCoroutine(CheckIfAllComponentsAreReady());
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    
+    IEnumerator CheckIfAllComponentsAreReady()
+    {
+        yield return new WaitUntil(() => dnmkPlayingField.IsReady && dnmkParticleSystemPool.IsReady &&
+           dnmkBulletPool.IsReady && dnmkStage.IsReady);
+        EnableGame();
+        gameEnabled = true;
+    }
+
+    private void EnableGame()
+    {
+        Debug.Log("Game components ready at time: " + Time.fixedTime);
+        Debug.Log("This frame time: " + Time.fixedUnscaledDeltaTime);
+        dnmkStage.StartEvents();
+    }
 }
