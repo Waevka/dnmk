@@ -27,6 +27,13 @@ public class DnmkGameManager : MonoBehaviour {
         get { return dnmkBulletPool; }
     }
 
+    [SerializeField]
+    private DnmkStage dnmkStage = null;
+    public DnmkStage DnmkStage
+    {
+        get { return dnmkStage; }
+    }
+
 
     private void Awake()
     {
