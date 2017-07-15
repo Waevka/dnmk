@@ -23,6 +23,6 @@ public class DnmkEvent : MonoBehaviour {
 
     private void OnEnable()
     {
-        Debug.Log("Event enabled", gameObject);
+        //Debug.Log("Event enabled", gameObject);
     }
 }

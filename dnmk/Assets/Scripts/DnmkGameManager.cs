@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class DnmkGameManager : MonoBehaviour {
 
+    public enum DifficultyLevel { Easy, Normal, Hard, Lunatic };
+
     public static DnmkGameManager Instance { get; private set; }
     [SerializeField]
     private bool gameEnabled;
@@ -39,6 +41,13 @@ public class DnmkGameManager : MonoBehaviour {
         get { return dnmkStage; }
     }
 
+    [SerializeField]
+    private DnmkPlayerManager dnmkPlayer = null;
+    public DnmkPlayerManager DnmkPlayer
+    {
+        get { return dnmkPlayer; }
+    }
+
     private void Awake()
     {
         gameEnabled = false;
@@ -55,7 +64,7 @@ public class DnmkGameManager : MonoBehaviour {
     IEnumerator CheckIfAllComponentsAreReady()
     {
         yield return new WaitUntil(() => dnmkPlayingField.IsReady && dnmkParticleSystemPool.IsReady &&
-           dnmkBulletPool.IsReady && dnmkStage.IsReady);
+           dnmkBulletPool.IsReady && dnmkStage.IsReady && dnmkPlayer.IsReady);
         EnableGame();
         gameEnabled = true;
     }
@@ -64,6 +73,7 @@ public class DnmkGameManager : MonoBehaviour {
     {
         Debug.Log("Game components ready at time: " + Time.fixedTime);
         Debug.Log("This frame time: " + Time.fixedUnscaledDeltaTime);
+        dnmkPlayer.StartPlayer();
         dnmkStage.StartEvents();
     }
 }

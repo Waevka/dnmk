@@ -31,6 +31,11 @@ public class DnmkPlayingField : MonoBehaviour, IDnmkReadyableObject
         return GetComponent<BoxCollider2D>();
     }
 
+    public Transform GetPlayingFieldTransform()
+    {
+        return transform;
+    }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         GameManager.DnmkBulletPool.ReturnBulletToPool(collision.gameObject);
