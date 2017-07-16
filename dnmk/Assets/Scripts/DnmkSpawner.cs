@@ -166,6 +166,12 @@ public class DnmkSpawner : MonoBehaviour {
     public void OnParticleCollision(GameObject particle)
     {
         maxHealth -= 1; // TODO
+        StartCoroutine(CollidingParticleFinder(particle));
+    }
+
+    IEnumerator CollidingParticleFinder(GameObject particleSystem)
+    {
+        yield return null;
     }
 
     [System.Obsolete("Bullets are not GameObjects anymore, this is an old implementation to move bullets.")]
