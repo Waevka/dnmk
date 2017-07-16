@@ -56,9 +56,9 @@ public class DnmkPlayer : MonoBehaviour {
 
     IEnumerator InvincibilityPeriod()
     {
-        GetComponent<Rigidbody2D>().simulated = false;
         float startTime = Time.time;
-
+        gameObject.layer += 1; // we want to stop collisions with bullets, without disabling the movement
+        
         // animation ticks
         for(int i = 0; i < invincibilityAnimationFrames; i++)
         {
@@ -66,7 +66,7 @@ public class DnmkPlayer : MonoBehaviour {
             yield return new WaitForSeconds(invincibilityTime / (float)invincibilityAnimationFrames);
         }
 
-        GetComponent<Rigidbody2D>().simulated = true;
+        gameObject.layer -= 1;
         IsInvincible = false;
     }
 

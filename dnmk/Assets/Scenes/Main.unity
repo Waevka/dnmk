@@ -400,8 +400,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 1361751535265104, guid: 58cb2d41b6857a449b752a3462f5e06f,
     type: 2}
   DefaultPlayerPosition: {x: 0, y: -4, z: 0}
-  normalSpeed: 0.2
-  focusedSpeed: 0.1
+  normalSpeed: 2
+  focusedSpeed: 0.5
 --- !u!1 &670018416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,6 +1645,11 @@ Prefab:
         type: 2}
       propertyPath: m_Simulated
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 58839797480139662, guid: 58cb2d41b6857a449b752a3462f5e06f,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 58cb2d41b6857a449b752a3462f5e06f, type: 2}
