@@ -187,7 +187,8 @@ GameObject:
   - component: {fileID: 92842120}
   - component: {fileID: 92842122}
   - component: {fileID: 92842121}
-  m_Layer: 0
+  - component: {fileID: 92842123}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,8 +271,26 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds: []
   dnmkPrefab: {fileID: 0}
+--- !u!58 &92842123
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 92842119}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &129860251
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,7 +821,8 @@ GameObject:
   - component: {fileID: 884316389}
   - component: {fileID: 884316391}
   - component: {fileID: 884316390}
-  m_Layer: 0
+  - component: {fileID: 884316392}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -885,6 +905,9 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds:
   - 1
   - 1
@@ -897,6 +920,21 @@ MonoBehaviour:
   - 1
   - 1
   dnmkPrefab: {fileID: 0}
+--- !u!58 &884316392
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 884316388}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &959241150
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,7 +946,8 @@ GameObject:
   - component: {fileID: 959241151}
   - component: {fileID: 959241153}
   - component: {fileID: 959241152}
-  m_Layer: 0
+  - component: {fileID: 959241154}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -991,8 +1030,26 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds: []
   dnmkPrefab: {fileID: 0}
+--- !u!58 &959241154
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 959241150}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &1003023827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,7 +1158,8 @@ GameObject:
   - component: {fileID: 1144731488}
   - component: {fileID: 1144731490}
   - component: {fileID: 1144731489}
-  m_Layer: 0
+  - component: {fileID: 1144731491}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1184,6 +1242,9 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds:
   - 1
   - 1
@@ -1196,6 +1257,21 @@ MonoBehaviour:
   - 1
   - 1
   dnmkPrefab: {fileID: 0}
+--- !u!58 &1144731491
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1144731487}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &1352180097
 GameObject:
   m_ObjectHideFlags: 0
@@ -1207,7 +1283,8 @@ GameObject:
   - component: {fileID: 1644818234}
   - component: {fileID: 1352180099}
   - component: {fileID: 1352180098}
-  m_Layer: 0
+  - component: {fileID: 1352180100}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1276,8 +1353,26 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds: []
   dnmkPrefab: {fileID: 0}
+--- !u!58 &1352180100
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1352180097}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &1360744744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1699,7 +1794,8 @@ GameObject:
   - component: {fileID: 2106473660}
   - component: {fileID: 2106473662}
   - component: {fileID: 2106473661}
-  m_Layer: 0
+  - component: {fileID: 2106473663}
+  m_Layer: 12
   m_Name: DnmkSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1782,5 +1878,23 @@ MonoBehaviour:
   bulletLifetime: 10
   rotateSpeed: 0
   rotateEachBurstIndependently: 0
+  canBeDestroyed: 1
+  isAlive: 1
+  maxHealth: 100
   burstRotateSpeeds: []
   dnmkPrefab: {fileID: 0}
+--- !u!58 &2106473663
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2106473659}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2

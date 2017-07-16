@@ -66,6 +66,7 @@ public class DnmkParticleSystemPool : MonoBehaviour, IDnmkReadyableObject
     public void ReturnParticleSystemToPool(GameObject system)
     {
         system.transform.parent = transform;
-        particleSystemPool.Enqueue(system);
+        if(system != null) particleSystemPool.Enqueue(system);
+        else { Debug.LogWarning("Object destroying order error! Check me", gameObject); }
     }
 }

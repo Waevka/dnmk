@@ -17,8 +17,8 @@ TagManager:
   - Level Boundary
   - Player
   - PlayerIgnoringCollisions
-  - 
-  - 
+  - Enemy
+  - PlayerBullets
   - 
   - 
   - 

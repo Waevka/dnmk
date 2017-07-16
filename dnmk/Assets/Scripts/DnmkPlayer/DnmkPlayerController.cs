@@ -9,14 +9,19 @@ public class DnmkPlayerController : MonoBehaviour {
     private float normalSpeed;
     private float focusedSpeed;
     private bool isFocused;
+    private bool isShooting;
     new private Rigidbody2D rigidbody;
     private DnmkGameManager GameManager;
+    private ParticleSystem tempShooter; // TODO
     // Use this for initialization
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        isFocused = false;
+        isShooting = false;
         focusedSpeed = 0.0f;
         normalSpeed = 0.0f;
+        tempShooter = null;
     }
     void Start () {
 		
@@ -27,6 +32,7 @@ public class DnmkPlayerController : MonoBehaviour {
         UpdatePosition();
         UpdateFocus();
         UpdateBomb();
+        UpdateFire();
     }
 
     private void UpdatePosition()
@@ -73,14 +79,71 @@ public class DnmkPlayerController : MonoBehaviour {
 
     private void UpdateBomb()
     {
+        //TODO: invoke shooting module
+    }
 
+    private void UpdateFire()
+    {
+        if(Input.GetButtonDown("Fire") || Input.GetButton("Fire"))
+        {
+            if (!isShooting)
+            {
+                isShooting = true;
+            }
+            Shoot();
+
+        } else if (Input.GetButtonUp("Fire") || !Input.GetButton("Fire"))
+        {
+            isShooting = false;
+        }
+    }
+
+    private void Shoot()
+    {
+        if(tempShooter != null)
+        {
+            ParticleSystem.EmitParams bulletProperties = new ParticleSystem.EmitParams();
+            bulletProperties.velocity = new Vector3(0.0f, 8.0f); //TODO
+            tempShooter.Emit(bulletProperties, 1);
+        }
     }
 
     private void OnEnable()
     {
         isFocused = false;
+        isShooting = false;
         GameManager = DnmkGameManager.Instance;
         normalSpeed = GameManager.DnmkPlayer.NormalSpeed;
         focusedSpeed = GameManager.DnmkPlayer.FocusedSpeed;
+        // TODO: change shooting system
+        tempShooter = GameManager.DnmkParticleSystemPool.RequestParticleSystemFromPool().GetComponent<ParticleSystem>();
+        tempShooter.gameObject.transform.parent = transform;
+        tempShooter.gameObject.transform.position = transform.position;
+        tempShooter.gameObject.layer = 13;
+        var tempShooterMain = tempShooter.main;
+        tempShooterMain.simulationSpace = ParticleSystemSimulationSpace.World;
+        var tempShooterColl = tempShooter.collision;
+        //Debug.Log(tempShooterColl.collidesWith.value);
+        tempShooterColl.collidesWith = (1 << 12);
+        //
+    }
+
+    private void OnDisable()
+    {
+        var temShooterMain = tempShooter.main;
+        temShooterMain.simulationSpace = ParticleSystemSimulationSpace.Local;
+        if (GameManager.DnmkParticleSystemPool != null)
+        {
+            GameManager.DnmkParticleSystemPool.ReturnParticleSystemToPool(tempShooter.gameObject);
+        }
+        tempShooter = null;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.DnmkParticleSystemPool != null)
+        {
+            GameManager.DnmkParticleSystemPool.ReturnParticleSystemToPool(tempShooter.gameObject);
+        }
     }
 }
