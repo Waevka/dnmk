@@ -49,6 +49,7 @@ public class DnmkPlayer : MonoBehaviour {
         {
             Debug.Log("Player was hit");
             IsInvincible = true;
+            //TODO: don't let the player shoot
             StartCoroutine(InvincibilityPeriod());
         }
         //lives -1;
