@@ -21,6 +21,8 @@ public class DnmkSpawner : MonoBehaviour {
     public float maxHealth;
     [Tooltip("Specify rotation speed for each of the bursts.")]
     public float[] burstRotateSpeeds; // TODO: size dependent on OnInspectorGui()
+    public Material nonStandardBulletImage; // TODO: temp
+    public Color particleColor;
      
     // Prefabs
     //private ParticleSystem dnmkParticleSystem;
@@ -81,13 +83,17 @@ public class DnmkSpawner : MonoBehaviour {
         GameObject subParticleSystem = GameManager.DnmkParticleSystemPool.RequestParticleSystemFromPool();
         subParticleSystem.transform.position = bulletCenterPivot.transform.position;
         subParticleSystem.transform.parent = bulletCenterPivot.transform;
-
+        if (nonStandardBulletImage)
+            subParticleSystem.GetComponent<ParticleSystemRenderer>().material = nonStandardBulletImage;
+        //var tempMain = subParticleSystem.GetComponent<ParticleSystem>().main;
+        //tempMain.startColor = particleColor;
         // Set the parameters of the bullets: speed, color, sprite, etc.
         // Velocity sets the direction of the bullet.
         var emitParameters = new ParticleSystem.EmitParams();
         emitParameters.position = bulletCenterPivot.transform.localPosition;
         emitParameters.velocity = Vector3.down;
         emitParameters.axisOfRotation = Vector3.forward;
+        emitParameters.startColor = particleColor;
 
         // Create a temporary bulletTransform to simulate rotation of the particles, to calculate the velocity.
         GameObject bulletTransform = new GameObject("BulletTransform");

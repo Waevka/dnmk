@@ -275,6 +275,8 @@ MonoBehaviour:
   isAlive: 1
   maxHealth: 100
   burstRotateSpeeds: []
+  nonStandardBulletImage: {fileID: 0}
+  particleColor: {r: 1, g: 0.6745098, b: 0.88235295, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &92842123
 CircleCollider2D:
@@ -857,7 +859,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9667231d0e8a759428f5cc80fbe368d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -919,6 +921,9 @@ MonoBehaviour:
   - -1
   - 1
   - 1
+  nonStandardBulletImage: {fileID: 2100000, guid: 9667231d0e8a759428f5cc80fbe368d7,
+    type: 2}
+  particleColor: {r: 1, g: 0.9705882, b: 0.5735294, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &884316392
 CircleCollider2D:
@@ -1034,6 +1039,8 @@ MonoBehaviour:
   isAlive: 1
   maxHealth: 100
   burstRotateSpeeds: []
+  nonStandardBulletImage: {fileID: 0}
+  particleColor: {r: 1, g: 0.6745098, b: 0.88235295, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &959241154
 CircleCollider2D:
@@ -1256,6 +1263,9 @@ MonoBehaviour:
   - -1
   - 1
   - 1
+  nonStandardBulletImage: {fileID: 2100000, guid: 3164adcc568992544a39e55c67031885,
+    type: 2}
+  particleColor: {r: 0.5147059, g: 0.87951314, b: 1, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &1144731491
 CircleCollider2D:
@@ -1357,6 +1367,8 @@ MonoBehaviour:
   isAlive: 1
   maxHealth: 100
   burstRotateSpeeds: []
+  nonStandardBulletImage: {fileID: 0}
+  particleColor: {r: 1, g: 0.6764706, b: 0.8839757, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &1352180100
 CircleCollider2D:
@@ -1877,6 +1889,8 @@ MonoBehaviour:
   isAlive: 1
   maxHealth: 100
   burstRotateSpeeds: []
+  nonStandardBulletImage: {fileID: 0}
+  particleColor: {r: 1, g: 0.6745098, b: 0.88235295, a: 1}
   dnmkPrefab: {fileID: 0}
 --- !u!58 &2106473663
 CircleCollider2D:
