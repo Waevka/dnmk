@@ -66,7 +66,7 @@ public class DnmkSpawner : MonoBehaviour {
             currentRepeat++;
         }
 
-        if (currentRepeat == repeats || maxHealth <= 0)
+        if (maxHealth <= 0 || repeats == currentRepeat)
         {
             spawnerActive = false;
         }
@@ -149,7 +149,7 @@ public class DnmkSpawner : MonoBehaviour {
     {
         float spawnerLifeTime = Time.time;
         ParticleSystem particleSystem = particleSystemHolder.GetComponent<ParticleSystem>();
-        yield return new WaitUntil(() => !spawnerActive || particleSystem.particleCount == 0 && Time.time > (spawnerLifeTime + time));
+        yield return new WaitUntil(() => particleSystem.particleCount == 0 && Time.time > (spawnerLifeTime + time));
         GameManager.DnmkParticleSystemPool.ReturnParticleSystemToPool(particleSystemHolder);
 
     }
@@ -158,14 +158,14 @@ public class DnmkSpawner : MonoBehaviour {
     private IEnumerator PivotCleanup(GameObject pivot, float time)
     {
         float rotationStartTime = Time.time;
-        yield return new WaitUntil(() => !spawnerActive || pivot.transform.childCount == 0 && Time.time > (rotationStartTime + time));
+        yield return new WaitUntil(() => pivot.transform.childCount == 0 && Time.time > (rotationStartTime + time));
         Destroy(pivot, 0.2f);
     }
 
     // Deletes the spawners after all bullet burst have been shot (repeats == 0), and no more particle systems exist (childcount == 0).
     private IEnumerator SpawnerCleanup()
     {
-        yield return new WaitUntil(() => !spawnerActive || transform.childCount == 0 && repeats == currentRepeat);
+        yield return new WaitUntil(() => transform.childCount == 0 && repeats == currentRepeat);
         Destroy(gameObject, 0.1f);
     }
 

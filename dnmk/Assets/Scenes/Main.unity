@@ -1748,11 +1748,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 199369793567474156, guid: 58cb2d41b6857a449b752a3462f5e06f,
+    - target: {fileID: 50470690128571142, guid: 58cb2d41b6857a449b752a3462f5e06f,
         type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: fba42a6a4c0772246be277d186a54caa, type: 2}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 58cb2d41b6857a449b752a3462f5e06f, type: 2}
   m_IsPrefabParent: 0
