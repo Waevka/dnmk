@@ -421,8 +421,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 1361751535265104, guid: 58cb2d41b6857a449b752a3462f5e06f,
     type: 2}
   DefaultPlayerPosition: {x: 0, y: -4, z: 0}
-  normalSpeed: 2
-  focusedSpeed: 0.5
+  normalSpeed: 4
+  focusedSpeed: 1
 --- !u!1 &670018416
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,7 +539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c2ca33819d2aaa47aa9d4f6ce0412c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  queueSize: 50
+  queueSize: 100
   defaultParticleSystemPrefab: {fileID: 1870374520629818, guid: 8790aae3206ec7340b6a12e725a85047,
     type: 2}
   avaliableParticleSystems: 0
@@ -1361,7 +1361,7 @@ MonoBehaviour:
   bulletAmount: 30
   bulletSpeed: 2
   bulletLifetime: 10
-  rotateSpeed: 0
+  rotateSpeed: 3
   rotateEachBurstIndependently: 0
   canBeDestroyed: 1
   isAlive: 1

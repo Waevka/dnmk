@@ -16,6 +16,7 @@ public class DnmkPlayerController : MonoBehaviour {
     private bool canShoot;
     new private Rigidbody2D rigidbody;
     private DnmkGameManager GameManager;
+    private Vector3 allocatedPositionVector;
     // Use this for initialization
     private void Awake()
     {
@@ -27,13 +28,14 @@ public class DnmkPlayerController : MonoBehaviour {
         canShoot = false;
         bulletProperties = new ParticleSystem.EmitParams();
         bulletProperties.velocity = new Vector3(0.0f, 8.0f); //TODO
+        allocatedPositionVector = Vector3.zero;
     }
     void Start () {
 		
 	}
 
     // Update is called once per frame
-    void Update() {
+    void FixedUpdate() {
         UpdatePosition();
         UpdateFocus();
         UpdateBomb();
@@ -42,21 +44,23 @@ public class DnmkPlayerController : MonoBehaviour {
 
     private void UpdatePosition()
     {
-        varX = Input.GetAxis("Horizontal");
-        varY = Input.GetAxis("Vertical");
+        varX = Input.GetAxisRaw("Horizontal");
+        varY = Input.GetAxisRaw("Vertical");
         if (varX != 0 || varY != 0)
         {
             if (isFocused)
             {
-                varX = varX * focusedSpeed * Time.deltaTime;
-                varY = varY * focusedSpeed * Time.deltaTime;
+                allocatedPositionVector.x = varX * Time.fixedDeltaTime * focusedSpeed;
+                allocatedPositionVector.y = varY * Time.fixedDeltaTime * focusedSpeed;
+                allocatedPositionVector = Vector3.ClampMagnitude(allocatedPositionVector, focusedSpeed);
             }
             else
             {
-                varX = varX * normalSpeed * Time.deltaTime;
-                varY = varY * normalSpeed * Time.deltaTime;
+                allocatedPositionVector.x = varX * Time.fixedDeltaTime * normalSpeed;
+                allocatedPositionVector.y = varY * Time.fixedDeltaTime * normalSpeed;
+                allocatedPositionVector = Vector3.ClampMagnitude(allocatedPositionVector, normalSpeed);
             }
-            rigidbody.MovePosition(new Vector2(transform.position.x + varX, transform.position.y + varY));
+            rigidbody.MovePosition(transform.position + allocatedPositionVector);
         }
     }
 
